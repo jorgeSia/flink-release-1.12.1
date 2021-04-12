@@ -24,6 +24,8 @@ import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.util.MathUtils;
 import org.apache.flink.util.Preconditions;
 
+import scala.Int;
+
 public final class KeyGroupRangeAssignment {
 
     /**
@@ -68,7 +70,12 @@ public final class KeyGroupRangeAssignment {
             return computeKeyGroupForKeyHash((int) key, maxParallelism);
         }
         else if(key instanceof Tuple2){
-            return computeKeyGroupForKeyHash((int) ((Tuple2<?, ?>) key).f1, maxParallelism);
+            if(((Tuple2<?, ?>) key).f1 instanceof Integer && ((Tuple2<?, ?>) key).f0 instanceof Integer){
+                return computeKeyGroupForKeyHash((int) ((Tuple2<?, ?>) key).f1, maxParallelism);
+            }
+            else{
+                return computeKeyGroupForKeyHash(key.hashCode(), maxParallelism);
+            }
         }
         else{
             return computeKeyGroupForKeyHash(key.hashCode(), maxParallelism);
