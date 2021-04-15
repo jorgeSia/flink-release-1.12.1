@@ -19,6 +19,7 @@
 package org.apache.flink.runtime.state;
 
 import org.apache.flink.api.dag.Transformation;
+import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.util.MathUtils;
@@ -74,7 +75,8 @@ public final class KeyGroupRangeAssignment {
                 return computeKeyGroupForKeyHash((int) ((Tuple2<?, ?>) key).f1, maxParallelism);
             }
             else{
-                return computeKeyGroupForKeyHash(key.hashCode(), maxParallelism);
+//                System.out.println("keyHashCode: " + (key.hashCode() & 0x7FFFFFFF));
+                return computeKeyGroupForKeyHash(key.hashCode() & 0x7FFFFFFF, maxParallelism);
             }
         }
         else{
@@ -90,6 +92,7 @@ public final class KeyGroupRangeAssignment {
      * @return the key-group to which the given key is assigned
      */
     public static int computeKeyGroupForKeyHash(int keyHash, int maxParallelism) {
+//        System.out.println("KeyGroup: " + (keyHash % maxParallelism));
         return keyHash % maxParallelism;
     }
 
@@ -119,6 +122,7 @@ public final class KeyGroupRangeAssignment {
 
         int start = ((operatorIndex * maxParallelism + parallelism - 1) / parallelism);
         int end = ((operatorIndex + 1) * maxParallelism - 1) / parallelism;
+//        System.out.println("OperatorKeyGroupRange: " + new Tuple2<>(start,end).toString());
         return new KeyGroupRange(start, end);
     }
 
@@ -140,6 +144,7 @@ public final class KeyGroupRangeAssignment {
      */
     public static int computeOperatorIndexForKeyGroup(
             int maxParallelism, int parallelism, int keyGroupId) {
+//        System.out.println("OperatorIndex: " + (keyGroupId * parallelism / maxParallelism));
         return keyGroupId * parallelism / maxParallelism ;
     }
 
