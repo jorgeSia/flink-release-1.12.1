@@ -80,7 +80,7 @@ public final class KeyGroupRangeAssignment {
             }
         }
         else{
-            return computeKeyGroupForKeyHash(key.hashCode(), maxParallelism);
+            return computeKeyGroupForKeyHash(key.hashCode() & 0x7FFFFFFF, maxParallelism);
         }
     }
 
