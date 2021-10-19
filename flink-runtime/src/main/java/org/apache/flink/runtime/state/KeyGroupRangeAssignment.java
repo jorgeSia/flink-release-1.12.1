@@ -21,6 +21,7 @@ package org.apache.flink.runtime.state;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.api.java.tuple.Tuple;
 import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.util.MathUtils;
 import org.apache.flink.util.Preconditions;
@@ -70,9 +71,9 @@ public final class KeyGroupRangeAssignment {
         if (key instanceof Integer ){
             return computeKeyGroupForKeyHash((int) key, maxParallelism);
         }
-        else if(key instanceof Tuple2){
-            if(((Tuple2<?, ?>) key).f1 instanceof Integer && ((Tuple2<?, ?>) key).f0 instanceof Integer){
-                return computeKeyGroupForKeyHash((int) ((Tuple2<?, ?>) key).f1, maxParallelism);
+        else if(key instanceof Tuple3){
+            if(((Tuple3<?, ?, ?>) key).f1 instanceof Integer && ((Tuple3<?, ?, ?>) key).f0 instanceof Integer && ((Tuple3<?, ?, ?>) key).f2 instanceof Integer){
+                return computeKeyGroupForKeyHash((int) ((Tuple3<?, ?, ?>) key).f1, maxParallelism);
             }
             else{
 //                System.out.println("keyHashCode: " + (key.hashCode() & 0x7FFFFFFF));
