@@ -20,6 +20,7 @@ package org.apache.flink.state.api.output.partitioner;
 
 import org.apache.flink.annotation.Internal;
 import org.apache.flink.api.java.functions.KeySelector;
+import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.util.Preconditions;
 
 /**
@@ -42,6 +43,24 @@ public class HashSelector<IN> implements KeySelector<IN, Integer> {
 
     @Override
     public Integer getKey(IN value) throws Exception {
-        return keySelector.getKey(value).hashCode();
+        System.out.println(keySelector.getKey(value));
+        if (keySelector.getKey(value) instanceof Integer ){
+            return (int)keySelector.getKey(value);
+        }
+        else if(keySelector.getKey(value) instanceof Tuple3){
+            if(((Tuple3<?, ?, ?>) keySelector.getKey(value)).f1 instanceof Integer &&
+                    ((Tuple3<?, ?, ?>) keySelector.getKey(value)).f0 instanceof Integer &&
+                    ((Tuple3<?, ?, ?>) keySelector.getKey(value)).f2 instanceof Integer){
+                System.out.println(((Tuple3<?, ?, ?>) keySelector.getKey(value)).f1);
+                return (int) ((Tuple3<?, ?, ?>) keySelector.getKey(value)).f1;
+            }
+            else{
+//                System.out.println("keyHashCode: " + (key.hashCode() & 0x7FFFFFFF));
+                return keySelector.getKey(value).hashCode() & 0x7FFFFFFF;
+            }
+        }
+        else{
+            return keySelector.getKey(value).hashCode() & 0x7FFFFFFF;
+        }
     }
 }
