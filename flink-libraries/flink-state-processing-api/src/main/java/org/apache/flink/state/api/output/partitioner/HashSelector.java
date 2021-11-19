@@ -43,7 +43,6 @@ public class HashSelector<IN> implements KeySelector<IN, Integer> {
 
     @Override
     public Integer getKey(IN value) throws Exception {
-        System.out.println(keySelector.getKey(value));
         if (keySelector.getKey(value) instanceof Integer ){
             return (int)keySelector.getKey(value);
         }
@@ -51,7 +50,6 @@ public class HashSelector<IN> implements KeySelector<IN, Integer> {
             if(((Tuple3<?, ?, ?>) keySelector.getKey(value)).f1 instanceof Integer &&
                     ((Tuple3<?, ?, ?>) keySelector.getKey(value)).f0 instanceof Integer &&
                     ((Tuple3<?, ?, ?>) keySelector.getKey(value)).f2 instanceof Integer){
-                System.out.println(((Tuple3<?, ?, ?>) keySelector.getKey(value)).f1);
                 return (int) ((Tuple3<?, ?, ?>) keySelector.getKey(value)).f1;
             }
             else{
